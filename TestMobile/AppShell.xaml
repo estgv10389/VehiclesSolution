@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="TestMobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:TestMobile"
+    xmlns:views="clr-namespace:TestMobile.Pages"
+    xmlns:vehicles="clr-namespace:TestMobile.Pages.Vehicles"
+    Title="TestMobile"
+    >
+
+    <FlyoutItem Title="Home Page" Icon="icon_page.png">
+        <ShellContent Title="Home Page"
+                      Route="homePage"
+                      ContentTemplate="{DataTemplate views:HomePage}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Vehicles Page" Icon="icon_page.png">
+        <ShellContent Title="Vehicles Page"
+                   Route="vehicles"
+                   ContentTemplate="{DataTemplate vehicles:VehiclesInit}" />
+    </FlyoutItem>
+
+    <MenuItem Text="Sair"
+          Clicked="OnSignOutClicked"
+          >
+        <MenuItem.IconImageSource>
+            <FontImageSource Glyph="&#xf08b;"
+                         FontFamily="FASolid"
+                         Color="Red" />
+        </MenuItem.IconImageSource>
+    </MenuItem>
+
+</Shell>
