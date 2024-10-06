@@ -1,10 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="TestMobile.MainPage"
              BackgroundColor="#FFFFFF"
              Title="Login"
              >
+
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="{StaticResource Primary}" />
+    </ContentPage.Behaviors>
 
     <ScrollView>
         <Grid Padding="30">
@@ -13,16 +18,12 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Logotipo ou imagem no topo -->
             <Image Source="dotnet_bot.png"
                    HeightRequest="100"
                    HorizontalOptions="Center"
                    Margin="0,50,0,20"/>
 
-            <!-- Formulário de login -->
             <StackLayout Grid.Row="1" Spacing="20">
-
-                <!-- Campo de Email -->
                 <Frame CornerRadius="10" HasShadow="False" BorderColor="#CCCCCC">
                     <StackLayout Orientation="Horizontal" Padding="10,5">
                         <Image Source="icon_email.png" WidthRequest="24" HeightRequest="24" VerticalOptions="Center"/>
@@ -34,7 +35,6 @@
                     </StackLayout>
                 </Frame>
 
-                <!-- Campo de Senha -->
                 <Frame CornerRadius="10" HasShadow="False" BorderColor="#CCCCCC">
                     <StackLayout Orientation="Horizontal" Padding="10,5">
                         <Image Source="icon_password.png" WidthRequest="24" HeightRequest="24" VerticalOptions="Center"/>
@@ -46,7 +46,6 @@
                     </StackLayout>
                 </Frame>
 
-                <!-- Botão de Login -->
                 <Button Text="Entrar"
                         Clicked="OnLoginButtonClicked"
                         BackgroundColor="#007AFF"
@@ -54,7 +53,6 @@
                         CornerRadius="10"
                         HeightRequest="50"/>
 
-                <!-- Link para cadastro ou recuperação de senha -->
                 <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,20,0,0">
                     <Label Text="Não tem uma conta?" FontSize="Medium"/>
                     <Label Text="Cadastre-se"

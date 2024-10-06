@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:TestMobile"
     xmlns:views="clr-namespace:TestMobile.Pages"
     xmlns:vehicles="clr-namespace:TestMobile.Pages.Vehicles"
+    xmlns:auctions="clr-namespace:TestMobile.Views.Auctions"
     Title="TestMobile"
     >
 
@@ -19,6 +20,12 @@
         <ShellContent Title="Vehicles Page"
                    Route="vehicles"
                    ContentTemplate="{DataTemplate vehicles:VehiclesInit}" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Auctions Page" Icon="icon_page.png">
+        <ShellContent Title="Auctions Page"
+                   Route="auctions"
+                   ContentTemplate="{DataTemplate auctions:AuctionsInit}" />
     </FlyoutItem>
 
     <MenuItem Text="Sair"

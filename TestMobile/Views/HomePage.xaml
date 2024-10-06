@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestMobile.Pages.HomePage"
+             Title="HomePage">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <Frame CornerRadius="10" BackgroundColor="#142453" Padding="20">
+                <StackLayout>
+                    <Label Text="Next Auction" FontSize="Medium" TextColor="White"/>
+                    <Label Text="{Binding NextAuction.DateTime, StringFormat='{0:dd/MM/yyyy HH:mm}'}" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                    <Label Text="{Binding NextAuctionCount, StringFormat='Vehicles: {0}'}" FontSize="Small" TextColor="White"/>
+                </StackLayout>
+            </Frame>
+            <Frame CornerRadius="10" BackgroundColor="#a2065f" Padding="20">
+                <StackLayout>
+                    <Label Text="Total Cars Imported" FontSize="Medium" TextColor="White"/>
+                    <Label Text="{Binding TotalCars}" FontSize="Large" FontAttributes="Bold" TextColor="White"/>
+                </StackLayout>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
