@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 using Syncfusion.Maui.Core.Hosting;
 using TestMobile.Handler;
 using TestMobile.Pages.Vehicles;
@@ -13,7 +14,7 @@ namespace TestMobile
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .ConfigureSyncfusionCore()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -21,6 +22,7 @@ namespace TestMobile
                 });
             Environment.SetEnvironmentVariable("API_BASE_URI", "http://10.0.2.2:5249/api/");
 
+            builder.Services.AddSingleton<LoadingService>();
             builder.Services.AddHttpClient<AuthService>();
             builder.Services.AddHttpClient<VehicleService>()
              .AddHttpMessageHandler<AuthTokenHandler>();

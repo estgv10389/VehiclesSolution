@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestMobile.Views.Auctions.AuctionDetails"
+             xmlns:components="clr-namespace:TestMobile.Views.Components"
+             xmlns:viewModels="clr-namespace:TestMobile.ViewModels"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Name="ThisAuctionDetailsPage"
+>
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="20" Spacing="20">
+                <Label Text="{Binding SelectedAuction.Id}"
+                       FontSize="Large"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center" />
+
+                <Label Text="{Binding SelectedAuction.DateTime, StringFormat='DateTime: {0:dd/MM/yyyy HH:mm}'}"
+                       FontSize="Medium" />
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Label Text="Filter" FontAttributes="Bold" FontSize="Medium" />
+                    </toolkit:Expander.Header>
+                    <toolkit:Expander.Content>
+                        <Frame BorderColor="Gray" CornerRadius="10" Padding="10" Margin="10,0">
+                            <StackLayout Spacing="10">
+                                <!-- Filter by Make -->
+                                <Entry Placeholder="By Make" 
+                                   Text="{Binding FilterMake}" />
+
+                                <!-- Filter by Model -->
+                                <Entry Placeholder="By Model" 
+                                   Text="{Binding FilterModel}" />
+
+                                <!-- Filter by Starting Bid Range -->
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Starting Bid:" VerticalOptions="Center" />
+                                    <Slider Minimum="0" Maximum="100000" Value="{Binding FilterStartingBid}" />
+                                    <Label Text="{Binding FilterStartingBid}" VerticalOptions="Center" />
+                                </StackLayout>
+
+                                <!-- Show only Favourites -->
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="Show Favourites Only" VerticalOptions="Center" />
+                                    <Switch IsToggled="{Binding ShowFavouritesOnly}" />
+                                </StackLayout>
+
+                                <!-- Apply Filter Button -->
+                                <Button Text="Apply Filters" Command="{Binding ApplyFilterCommand}" />
+                            </StackLayout>
+                        </Frame>
+                    </toolkit:Expander.Content>
+                </toolkit:Expander>
+
+                <CollectionView ItemsSource="{Binding FilteredVehicles}"
+                                SelectionMode="Single">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <components:CardsComponent Vehicle="{Binding}"  TapCommand="{Binding BindingContext.VehicleTappedCommand, Source={x:Reference ThisAuctionDetailsPage}}"/>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical"
+                                         Span="1"
+                            HorizontalItemSpacing="10"
+                                         VerticalItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+                </CollectionView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
