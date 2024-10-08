@@ -1,4 +1,6 @@
-﻿namespace TestMobile
+﻿using TestMobile.Pages;
+
+namespace TestMobile
 {
     public partial class AppShell : Shell
     {
@@ -15,7 +17,7 @@
 
             // Limpar estado de autenticação
             // await AuthService.LogoutAsync();
-            Application.Current.MainPage = new NavigationPage(new MainPage());
+            Application.Current.MainPage = new NavigationPage(new HomePage());
         }
     }
 }

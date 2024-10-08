@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
-using Syncfusion.Maui.Core.Hosting;
 using TestMobile.Handler;
 using TestMobile.Pages.Vehicles;
 using TestMobile.Services;

@@ -14,8 +14,10 @@ namespace TestMobile.ViewModels
     {
         private ImageSource _imageSource;
         private Vehicle _vehicle;
-        private Auction _auction;
         private bool _favourite;
+        private string _auctionDate;
+        private string _auctionTime;
+        private DateTime _vehicleAuctionDateTime;
 
         public ImageSource ImageSource
         {
@@ -60,25 +62,12 @@ namespace TestMobile.ViewModels
             }
         }
 
-        public Auction Auction
-        {
-            get => _auction;
-            set
-            {
-                _auction = value;
-                OnPropertyChanged(nameof(Auction));
-            }
-        }
-
-        public string AuctionDate => _auction.DateTime.ToString("dd/MM/yyyy");
-        public string AuctionTime => _auction.DateTime.ToString("hh:mm tt");
-
-
+ 
         public string TimeUntilAuction
         {
             get
             {
-                var timeRemaining = _auction.DateTime - DateTime.Now;
+                var timeRemaining = _vehicleAuctionDateTime - DateTime.Now;
 
                 if (timeRemaining.TotalSeconds <= 0)
                     return "Auction has already ended";
@@ -87,11 +76,16 @@ namespace TestMobile.ViewModels
             }
         }
 
-        public VehicleDetailsViewModel(Vehicle vehicle, Auction auction)
+        public string AuctionDate => _auctionDate;
+        public string AuctionTime => _auctionTime;
+
+        public VehicleDetailsViewModel(Vehicle vehicle)
         {
             ImageSource = ImageSource.FromFile("dotnet_bot.png");
             Vehicle = vehicle;
-            Auction = auction;
+            _auctionDate = vehicle.AuctionDateAndTime.ToString("dd/MM/yyyy");
+            _auctionTime = vehicle.AuctionDateAndTime.ToString("hh:mm tt");
+            _vehicleAuctionDateTime = vehicle.AuctionDateAndTime;
             ToggleFavouriteCommand = new Command(ToggleFavourite);
 
         }

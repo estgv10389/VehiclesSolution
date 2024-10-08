@@ -6,7 +6,6 @@
     <ScrollView>
         <VerticalStackLayout Padding="15" Spacing="20" BackgroundColor="#f0f0f0">
 
-            <!-- Vehicle Image and Title Section -->
             <Frame BorderColor="Gray" CornerRadius="10" Padding="0" Margin="0">
                 <Grid>
                     <Image Source="{Binding ImageSource}" Aspect="AspectFill" HeightRequest="250"/>
@@ -20,7 +19,6 @@
                            Padding="10" 
                            HorizontalTextAlignment="Center"/>
 
-                    <!-- Favourite Star Icon -->
                     <ImageButton Source="{Binding FavouriteIcon}" 
                                  Command="{Binding ToggleFavouriteCommand}"
                                  HorizontalOptions="End" 
@@ -32,7 +30,7 @@
                 </Grid>
             </Frame>
 
-            <!-- Basic Vehicle Information -->
+ 
             <Frame BorderColor="LightGray" CornerRadius="10" Padding="10" BackgroundColor="#ffffff">
                 <VerticalStackLayout>
                     <Label Text="Basic Information" FontAttributes="Bold" FontSize="Medium" Padding="0,0,0,10" TextColor="#3366ff"/>
@@ -71,7 +69,7 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <!-- Auction Information -->
+        
             <Frame BorderColor="LightGray" CornerRadius="10" Padding="10" BackgroundColor="#fff9e6">
                 <VerticalStackLayout>
                     <Label Text="Auction Details" FontAttributes="Bold" FontSize="Medium" Padding="0,0,0,10" TextColor="#ff6600"/>

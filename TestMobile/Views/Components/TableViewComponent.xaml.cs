@@ -89,7 +89,6 @@ public partial class TableViewComponent : ContentView
                 ColumnSpacing = 10
             };
 
-            // Definir as colunas
             foreach (var column in ColumnDefinitions)
             {
                 grid.ColumnDefinitions.Add(new ColumnDefinition
@@ -98,7 +97,6 @@ public partial class TableViewComponent : ContentView
                 });
             }
 
-            // Adicionar as células
             int columnIndex = 0;
             foreach (var column in ColumnDefinitions)
             {

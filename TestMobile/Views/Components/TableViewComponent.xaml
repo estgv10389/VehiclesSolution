@@ -5,22 +5,45 @@
              x:Class="TestMobile.Views.Components.TableViewComponent"
              x:Name="ThisContentView"
              >
+    <ContentView.Resources>
+        <Style TargetType="Grid">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="{StaticResource PrimaryDark}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentView.Resources>
+    
     <ContentView.Content>
         <StackLayout>
             <Grid BackgroundColor="#CCCCCC" Padding="10">
                 <ScrollView Orientation="Horizontal">
                     <StackLayout Orientation="Horizontal" x:Name="HeaderStack">
-                        <!-- Headers serão adicionados aqui -->
+                   
                     </StackLayout>
                 </ScrollView>
             </Grid>
 
-            <!-- Corpo da Tabela -->
             <CollectionView x:Name="TableCollectionView"
                             ItemsSource="{Binding Items, Source={RelativeSource AncestorType={x:Type local:TableViewComponent}}}"
                             SelectionMode="Single"
                             SelectedItem="{Binding SelectedItem, Source={x:Reference Name=ThisContentView}, Mode=TwoWay}"
                             >
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Label Text="{Binding YourDataProperty}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" />
                 </CollectionView.ItemsLayout>

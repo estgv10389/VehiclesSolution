@@ -9,37 +9,45 @@ namespace TestMobile.Models
 {
     public class Vehicle
     {
-        [JsonPropertyName("Make")]
+        [JsonPropertyName("make")]
         public required string Make { get; set; }
 
-        [JsonPropertyName("Model")]
+        [JsonPropertyName("model")]
         public required string Model { get; set; }
 
-        [JsonPropertyName("Image")]
+        [JsonPropertyName("image")]
         public string? Image { get; set; }
 
-        [JsonPropertyName("Engine Size")]
+        [JsonPropertyName("engineSize")]
         public required string EngineSize { get; set; }
 
-        [JsonPropertyName("Fuel Type")]
+        [JsonPropertyName("fuel")]
         public required string FuelType { get; set; }
 
-        [JsonPropertyName("Year")]
+        [JsonPropertyName("year")]
         public int Year { get; set; }
 
-        [JsonPropertyName("Mileage")]
+        [JsonPropertyName("mileage")]
         public int Mileage { get; set; }
 
-        [JsonPropertyName("Auction Date and Time")]
-        public DateTime AuctionDateAndTime { get; set; }
+        [JsonPropertyName("auctionDateTime")]
+        public required string AuctionDateAndTimeRaw { get; set; }
 
-        [JsonPropertyName("Starting Bid")]
+        public DateTime AuctionDateAndTime
+        {
+            get
+            {
+                return DateTime.Parse(AuctionDateAndTimeRaw);
+            }
+        }
+
+        [JsonPropertyName("startingBid")]
         public decimal StartingBid { get; set; }
 
-        [JsonPropertyName("Favourite")]
+        [JsonPropertyName("favourite")]
         public bool Favourite { get; set; }
 
-        [JsonPropertyName("Details")]
+        [JsonPropertyName("details")]
         public required Details Details { get; set; }
 
     }

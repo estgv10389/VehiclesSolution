@@ -9,27 +9,27 @@ namespace TestMobile.Models
 {
    public class Specification
     {
-        [JsonPropertyName("Vehicle Type")]
+        [JsonPropertyName("vehicleType")]
         public required string VehicleType { get; set; }
 
-        [JsonPropertyName("Colour")]
+        [JsonPropertyName("colour")]
         public required string Colour { get; set; }
 
-        [JsonPropertyName("Fuel")]
+        [JsonPropertyName("fuel")]
         public required string Fuel { get; set; }
-        [JsonPropertyName("Transmission")]
+        [JsonPropertyName("transmission")]
         public required string Transmission { get; set; }
 
-        [JsonPropertyName("Number Of Doors")]
+        [JsonPropertyName("numberOfDoors")]
         public int NumberOfDoors { get; set; }
 
-        [JsonPropertyName("CO2 Emissions")]
-        public decimal CO2Emissions { get; set; }
+        [JsonPropertyName("co2Emissions")]
+        public required string CO2Emissions { get; set; }
 
-        [JsonPropertyName("NOX Emissions")]
-        public decimal NOXEmissions { get; set; }
+        [JsonPropertyName("noxEmissions")]
+        public int NOXEmissions { get; set; }
 
-        [JsonPropertyName("Number Of Keys")]
+        [JsonPropertyName("numberOfKeys")]
         public int NumberOfKeys { get; set; }
     }
 }

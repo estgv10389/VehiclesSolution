@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,9 +15,8 @@ namespace TestMobile.ViewModels
     public class AuctionPageViewModel: INotifyPropertyChanged
     {
         private List<Auction> _auctions;
-        private List<CustomColumnDefinition> _auctionColumnDefinitions;
         private Auction _selectedAuction;
-
+        private Auction _storedAuctionBeforeNavigation;
         public List<Auction> Auctions
         {
             get => _auctions;
@@ -27,12 +27,12 @@ namespace TestMobile.ViewModels
             }
         }
 
-        public Auction SelectedAuction
+        public Auction? SelectedAuction
         {
             get => _selectedAuction;
             set
             {
-                if (_selectedAuction != value)
+                if (_selectedAuction != value && value != null)
                 {
                     _selectedAuction = value;
                     OnPropertyChanged();
@@ -47,47 +47,27 @@ namespace TestMobile.ViewModels
         public ICommand NavigateToDetailsCommand { get; }
         public AuctionPageViewModel()
         {
-            InitializeColumnDefinitions();
             LoadAuctions();
             NavigateToDetailsCommand = new Command<Auction>(NavigateToDetails);
         }
 
         private void LoadAuctions()
         {
-            Auctions = App.AuctionList;
+            Auctions = App.AuctionList ?? new List<Auction>();
         }
 
-        public List<CustomColumnDefinition> AuctionColumnDefinitions
-        {
-            get => _auctionColumnDefinitions;
-            set
-            {
-                if (_auctionColumnDefinitions != value)
-                {
-                    _auctionColumnDefinitions = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private void InitializeColumnDefinitions()
-        {
-            AuctionColumnDefinitions = new List<CustomColumnDefinition>
-            {
-                new CustomColumnDefinition { Header = "Id", BindingProperty = "Id", IsBold = true, Width = 100 },
-                new CustomColumnDefinition { Header = "DateTime", BindingProperty = "DateTime", IsBold = true, Width = 150 },
-            };
-        }
-
+ 
         private async void NavigateToDetails(Auction auction)
         {
             if (auction == null)
                 return;
             SelectedAuction = null;
             await Application.Current.MainPage.Navigation.PushAsync(new Views.Auctions.AuctionDetails(auction));
+            
+         
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
