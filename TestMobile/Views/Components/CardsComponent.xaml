@@ -8,24 +8,28 @@
     HasShadow="True"
     BorderColor="LightGray"
     BackgroundColor="White"
-    x:Name="ThisFrame"
+    x:Name="ThisBCAFrame"
     >
     <Frame.GestureRecognizers>
-        <TapGestureRecognizer Command="{Binding TapCommand, Source={x:Reference ThisFrame}}" CommandParameter="{Binding Vehicle, Source={x:Reference ThisFrame}}" />
+        <TapGestureRecognizer Command="{Binding TapCommand, Source={x:Reference ThisBCAFrame}}" CommandParameter="{Binding Vehicle, Source={x:Reference ThisBCAFrame}}" />
     </Frame.GestureRecognizers>
     <StackLayout>
         <Image Source="dotnet_bot.png"
-             Aspect="AspectFill"
-             HeightRequest="150"
-             HorizontalOptions="FillAndExpand" />
+               Aspect="AspectFill"
+               HeightRequest="150"
+               HorizontalOptions="FillAndExpand" />
+
+        <Label Text="{Binding Make}"
+               FontAttributes="Bold"
+               FontSize="Medium"
+               HorizontalOptions="Center" />
 
         <Label Text="{Binding Model}"
-             FontAttributes="Bold"
-             FontSize="Medium"
-             HorizontalOptions="Center" />
-
-        <Label Text="{Binding Year, StringFormat='Year: {0}'}"
-             FontSize="Small"
-             HorizontalOptions="Center" />
+               FontSize="Small"
+               HorizontalOptions="Center" />
+        
+        <Label Text="{Binding StartingBid, StringFormat='Starting Bid: {0}€'}"
+               FontSize="Small"
+               HorizontalOptions="Center" />
     </StackLayout>
 </Frame>

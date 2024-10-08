@@ -5,16 +5,19 @@
              xmlns:components="clr-namespace:TestMobile.Views.Components"
              xmlns:viewModels="clr-namespace:TestMobile.ViewModels"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:TestMobile.Converters"
              x:Name="ThisAuctionDetailsPage"
 >
-    <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Padding="20" Spacing="20">
-                <Label Text="{Binding SelectedAuction.Id}"
-                       FontSize="Large"
-                       FontAttributes="Bold"
-                       HorizontalOptions="Center" />
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <Grid>
+        <ScrollView  IsVisible="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+            <StackLayout Padding="20" Spacing="20">
                 <Label Text="{Binding SelectedAuction.DateTime, StringFormat='DateTime: {0:dd/MM/yyyy HH:mm}'}"
                        FontSize="Medium" />
                 <toolkit:Expander>
@@ -24,36 +27,57 @@
                     <toolkit:Expander.Content>
                         <Frame BorderColor="Gray" CornerRadius="10" Padding="10" Margin="10,0">
                             <StackLayout Spacing="10">
-                                <!-- Filter by Make -->
-                                <Entry Placeholder="By Make" 
-                                   Text="{Binding FilterMake}" />
-
-                                <!-- Filter by Model -->
-                                <Entry Placeholder="By Model" 
-                                   Text="{Binding FilterModel}" />
-
-                                <!-- Filter by Starting Bid Range -->
+                                <Picker Title="Select Make" ItemsSource="{Binding Makes}"
+                                        SelectedItem="{Binding FilterMake, Mode=TwoWay}" />
+                                <Picker Title="Select Model" ItemsSource="{Binding Models}"
+                                        SelectedItem="{Binding FilterModel, Mode=TwoWay}" />
+                              
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Starting Bid:" VerticalOptions="Center" />
-                                    <Slider Minimum="0" Maximum="100000" Value="{Binding FilterStartingBid}" />
+                                    <Slider Minimum="0" Maximum="{Binding MaxBid}" Value="{Binding FilterStartingBid}" />
                                     <Label Text="{Binding FilterStartingBid}" VerticalOptions="Center" />
                                 </StackLayout>
 
-                                <!-- Show only Favourites -->
                                 <StackLayout Orientation="Horizontal">
                                     <Label Text="Show Favourites Only" VerticalOptions="Center" />
                                     <Switch IsToggled="{Binding ShowFavouritesOnly}" />
                                 </StackLayout>
 
-                                <!-- Apply Filter Button -->
+                                
                                 <Button Text="Apply Filters" Command="{Binding ApplyFilterCommand}" />
                             </StackLayout>
                         </Frame>
                     </toolkit:Expander.Content>
                 </toolkit:Expander>
 
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Label Text="Sort" FontAttributes="Bold" FontSize="Medium" />
+                    </toolkit:Expander.Header>
+                    <toolkit:Expander.Content>
+                        <StackLayout Padding="20">
+                            <Label Text="Sort By" />
+                            <Picker ItemsSource="{Binding SortOptions}"
+                                    SelectedItem="{Binding SelectedSortOption, Mode=TwoWay}" />
+
+                            <StackLayout Orientation="Horizontal" Padding="10,0">
+                                <Label Text="Descending" VerticalOptions="Center" />
+                                <Switch IsToggled="{Binding IsDescending}" />
+                            </StackLayout>
+
+                            <Button Text="Apply Sort" Command="{Binding ApplySortCommand}" />
+                        </StackLayout>
+                    </toolkit:Expander.Content>
+                </toolkit:Expander>
+                
+                <Label Text="Vehicles per page" />
+                <Picker ItemsSource="{Binding VehiclesPerPageOptions}"
+                        SelectedItem="{Binding SelectedVehiclesPerPage, Mode=TwoWay}" />
+
                 <CollectionView ItemsSource="{Binding FilteredVehicles}"
-                                SelectionMode="Single">
+                                SelectionMode="Single"
+                               
+                                >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <components:CardsComponent Vehicle="{Binding}"  TapCommand="{Binding BindingContext.VehicleTappedCommand, Source={x:Reference ThisAuctionDetailsPage}}"/>
@@ -66,7 +90,23 @@
                                          VerticalItemSpacing="10" />
                     </CollectionView.ItemsLayout>
                 </CollectionView>
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
+                    <Button Text="Previous"
+                            Command="{Binding PreviousPageCommand}"
+                            IsEnabled="{Binding CanGoToPreviousPage}" />
+                    <Label Text="{Binding CurrentPageDisplay}" />
+                    <Button Text="Next"
+                            Command="{Binding NextPageCommand}"
+                            IsEnabled="{Binding CanGoToNextPage}" />
+                </StackLayout>
             </StackLayout>
         </ScrollView>
-    </ContentPage.Content>
+        <StackLayout IsVisible="{Binding IsBusy}" VerticalOptions="Center" HorizontalOptions="Center" Spacing="10">
+            <ActivityIndicator IsRunning="{Binding IsBusy}" Color="{StaticResource Primary}" />
+            <Label Text="Loading Vehicles, please wait..." 
+               FontSize="Medium" 
+               HorizontalOptions="Center" />
+        </StackLayout>
+    </Grid>
 </ContentPage>

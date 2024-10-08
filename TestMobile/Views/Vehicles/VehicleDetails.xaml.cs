@@ -7,10 +7,10 @@ namespace TestMobile.Views.Vehicles;
 
 public partial class VehicleDetails : ContentPage
 {
-    public VehicleDetails(Vehicle vehicle, Auction auction)
+    public VehicleDetails(Vehicle vehicle)
 	{
 		InitializeComponent();
-        BindingContext = new VehicleDetailsViewModel(vehicle, auction);
+        BindingContext = new VehicleDetailsViewModel(vehicle);
     }
 
   

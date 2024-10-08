@@ -15,4 +15,6 @@
             return ImageSource.FromStream(() => stream);
         }
     }
+
+
 }

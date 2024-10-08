@@ -9,13 +9,21 @@ namespace TestMobile.Models
 {
     public class OwnerShip
     {
-        [JsonPropertyName("Logbook")]
-        public bool Logbook { get; set; }
+        [JsonPropertyName("logBook")]
+        public required string Logbook { get; set; }
 
-        [JsonPropertyName("Number Of Owners")]
+        [JsonPropertyName("numberOfOwners")]
         public int NumberOfOwners { get; set; }
 
-        [JsonPropertyName("Date Of Registration")]
-        public DateTime DateOfRegistration { get; set; }
+        [JsonPropertyName("dateOfRegistration")]
+        public required string DateOfRegistration { get; set; }
+
+        public DateTime DateTime
+        {
+            get
+            {
+                return DateTime.Parse(DateOfRegistration);
+            }
+        }
     }
 }

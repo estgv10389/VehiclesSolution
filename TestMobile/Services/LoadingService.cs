@@ -10,10 +10,10 @@ namespace TestMobile.Services
 {
     public class LoadingService
     {
-         public async Task<List<Auction>> LoadingFile()
+        public async Task<List<Auction>> LoadingFile()
         {
-            List<Auction> ListAuction = new List<Auction>();
-            var filePath = "vehicles.json";
+            List<Auction> AuctionList = new List<Auction>();
+            var filePath = "vehicles_dataset.json";
 
             try
             {
@@ -21,16 +21,27 @@ namespace TestMobile.Services
                 using StreamReader reader = new StreamReader(stream);
                 string jsonString = await reader.ReadToEndAsync();
 
-                ListAuction = JsonSerializer.Deserialize<List<Auction>>(jsonString) ?? new List<Auction>();
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var vehicles = JsonSerializer.Deserialize<List<Vehicle>>(jsonString, options) ?? new List<Vehicle>();
+                AuctionList = vehicles.OrderBy(v => v.Make).GroupBy(v => new { v.AuctionDateAndTime })
+                                      .Select(g => new Auction
+                                      {
+                                          DateAndTimeRaw = g.Key.AuctionDateAndTime.ToString(),
+                                          Vehicles = g.ToList()
+                                      })
+                                      .ToList();
             }
             catch (Exception ex)
             {
-               
                 Console.WriteLine($"Erro ao carregar dados: {ex.Message}");
-                ListAuction = new List<Auction>();
+                AuctionList = new List<Auction>();
             }
 
-            return ListAuction;
+            return AuctionList;
         }
     }
 }

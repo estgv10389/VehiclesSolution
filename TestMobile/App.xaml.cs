@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using TestMobile.Models;
 using TestMobile.Services;
+using TestMobile.Views;
 
 namespace TestMobile
 {
@@ -12,15 +13,15 @@ namespace TestMobile
         {
             InitializeComponent();
             _loadingService = new LoadingService();
+            MainPage = new LoadingPage();
             LoadData();
-            MainPage = new MainPage();
-            
         }
 
         private async void LoadData()
         {
             var loadingService = new LoadingService();
             AuctionList = await _loadingService.LoadingFile();
+            MainPage = new AppShell();
         }
     }
 }

@@ -71,8 +71,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\auction.png" />
 	  <None Remove="Resources\Images\star_filled.png" />
 	  <None Remove="Resources\Images\star_outline.png" />
+	  <None Remove="Resources\Raw\vehicles_dataset.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -82,7 +84,6 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-		<PackageReference Include="Syncfusion.Maui.DataGrid" Version="27.1.51" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -99,6 +100,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\HomePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\LoadingPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Vehicles\VehicleDetails.xaml">
