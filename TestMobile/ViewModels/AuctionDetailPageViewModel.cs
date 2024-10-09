@@ -10,6 +10,8 @@ using TestMobile.Models.Components;
 using System.Windows.Input;
 using TestMobile.Views.Vehicles;
 using System.Collections.ObjectModel;
+using TestMobile.Interfaces;
+using TestMobile.Views.Components;
 
 namespace TestMobile.ViewModels
 {
@@ -18,7 +20,6 @@ namespace TestMobile.ViewModels
 
         private int _selectedVehiclesPerPage;
         private int _currentPage = 1;
-        private bool _isLoadingMoreVehicles = false;
         public decimal _filterStartingBid;
         public string _filterMake;
         public string _filterModel;
@@ -27,6 +28,10 @@ namespace TestMobile.ViewModels
         private bool _isBusy;
         private bool _canGoToNextPage;
         private bool _canGoToPreviousPage;
+        private readonly IDialogService _dialogService;
+        private readonly INavigation _navigation;
+        private int _totalFilteredVehicles;
+        private string _daysRemaining;
 
         private Auction _auction;
         public ObservableCollection<Vehicle> FilteredVehicles { get; set; } = new ObservableCollection<Vehicle>();
@@ -56,6 +61,9 @@ namespace TestMobile.ViewModels
         public ICommand ApplySortCommand { get; }
         public ICommand NextPageCommand { get; }
         public ICommand PreviousPageCommand { get; }
+        public ICommand OpenFilterPopupCommand { get; }
+
+        public ICommand OpenSortPopupCommand { get; }
 
         public Auction SelectedAuction
         {
@@ -65,6 +73,7 @@ namespace TestMobile.ViewModels
                 _auction = value;
                 OnPropertyChanged();
                 PopulateMakesAndModels();
+                CalculateDaysRemaining();
             }
         }
 
@@ -164,7 +173,7 @@ namespace TestMobile.ViewModels
             }
         }
 
-        public int TotalPages => (int)Math.Ceiling((double)Vehicles.Count / SelectedVehiclesPerPage);
+        public int TotalPages => (int)Math.Ceiling((double)_totalFilteredVehicles / SelectedVehiclesPerPage);
         public string CurrentPageDisplay => $"Page {_currentPage} of {TotalPages}";
 
         public bool CanGoToNextPage
@@ -187,16 +196,42 @@ namespace TestMobile.ViewModels
             }
         }
 
-        public AuctionDetailPageViewModel(Auction auction)
+        public int CurrentPage
         {
-      
+            get => _currentPage;
+            set
+            {
+                _currentPage = value;
+                OnPropertyChanged(nameof(CurrentPage));
+                LoadInitialVehicles();
+            }
+        }
+
+        public string DaysRemaining
+        {
+            get => _daysRemaining;
+            set
+            {
+                _daysRemaining = value;
+                OnPropertyChanged(nameof(DaysRemaining));
+            }
+        }
+
+
+        public AuctionDetailPageViewModel(Auction auction, IDialogService dialogService, INavigation navigation)
+        {
+            _dialogService = dialogService;
+            _navigation = navigation;
             SelectedAuction = auction;
             SelectedVehiclesPerPage = 5;
+            _totalFilteredVehicles =auction.VehiclesCount;
             VehicleTappedCommand = new Command<Vehicle>(OnVehicleTapped);
             ApplyFilterCommand = new Command(ApplyFilters);
             ApplySortCommand = new Command(ApplySort);
             NextPageCommand = new Command(GoToNextPage);
             PreviousPageCommand = new Command(GoToPreviousPage);
+            OpenFilterPopupCommand = new Command(OpenFilterPopup);
+            OpenSortPopupCommand = new Command(OpenSortPopup);
             LoadInitialVehicles();
         }
 
@@ -204,7 +239,6 @@ namespace TestMobile.ViewModels
         {
             if (SelectedAuction == null || !SelectedAuction.Vehicles.Any()) return;
 
-            _isLoadingMoreVehicles = true;
             FilteredVehicles.Clear();
             var initialVehicles = Vehicles.Skip((_currentPage - 1) * SelectedVehiclesPerPage).Take(SelectedVehiclesPerPage).ToList(); 
             foreach (var vehicle in initialVehicles)
@@ -216,7 +250,8 @@ namespace TestMobile.ViewModels
             CanGoToPreviousPage = _currentPage > 1;
 
             OnPropertyChanged(nameof(CurrentPageDisplay));
-            _isLoadingMoreVehicles = false;
+            OnPropertyChanged(nameof(FilteredVehicles));
+      
         }
 
         private async void OnVehicleTapped(Vehicle vehicle)
@@ -227,31 +262,41 @@ namespace TestMobile.ViewModels
             await Application.Current.MainPage.Navigation.PushAsync(new VehicleDetails(vehicle));
         }
 
-        private void ApplyFilters()
+        private async void ApplyFilters()
         {
+            await _navigation.PopModalAsync();
             IsBusy = true;
-            FilteredVehicles.Clear();
+           
             var filtered = Vehicles.Where(v =>
                 (string.IsNullOrEmpty(FilterMake) || v.Make == FilterMake) &&
                 (string.IsNullOrEmpty(FilterModel) || v.Model == FilterModel) &&
                 (FilterStartingBid == 0 || v.StartingBid >= FilterStartingBid) &&
                 (!ShowFavouritesOnly || v.Favourite == ShowFavouritesOnly)
             ).ToList();
+            CurrentPage = 1;
+            _totalFilteredVehicles = filtered.Count;
+            FilteredVehicles.Clear();
+            var paginatedVehicles = filtered.Skip((CurrentPage - 1) * SelectedVehiclesPerPage).Take(SelectedVehiclesPerPage).ToList();
 
-            foreach (var vehicle in filtered)
+            foreach (var vehicle in paginatedVehicles)
             {
                 FilteredVehicles.Add(vehicle);
             }
 
+            OnPropertyChanged(nameof(TotalPages));
+            OnPropertyChanged(nameof(CurrentPageDisplay));
+            OnPropertyChanged(nameof(FilteredVehicles));
             IsBusy = false;
         }
 
 
         private async void ApplySort()
         {
+            await _navigation.PopModalAsync();
             IsBusy = true;
             await Task.Run(() =>
             {
+
                 IEnumerable<Vehicle> sortedVehicles = Vehicles;
 
                 switch (SelectedSortOption)
@@ -279,15 +324,23 @@ namespace TestMobile.ViewModels
                 }
 
                 var sortedList = sortedVehicles.ToList();
+                var paginatedVehicles = sortedList
+                    .Skip((CurrentPage - 1) * SelectedVehiclesPerPage)
+                    .Take(SelectedVehiclesPerPage)
+                    .ToList();
 
                 Application.Current!.Dispatcher.Dispatch(() =>
                 {
                     FilteredVehicles.Clear();
 
-                    foreach (var vehicle in sortedList)
+                    foreach (var vehicle in paginatedVehicles)
                     {
                         FilteredVehicles.Add(vehicle);
                     }
+
+                    OnPropertyChanged(nameof(TotalPages));
+                    OnPropertyChanged(nameof(CurrentPageDisplay));
+                    OnPropertyChanged(nameof(FilteredVehicles));
                 });
             });
 
@@ -309,6 +362,32 @@ namespace TestMobile.ViewModels
             {
                 _currentPage--;
                 LoadInitialVehicles();
+            }
+        }
+
+        private async void OpenFilterPopup()
+        {
+            
+            await _navigation.PushModalAsync(new FilterPopupPage(this));
+        }
+
+        private async void OpenSortPopup()
+        {
+
+            await _navigation.PushModalAsync(new SortPopupPage(this));
+        }
+
+        private void CalculateDaysRemaining()
+        {
+            var timeSpan = SelectedAuction.DateTime - DateTime.Now;
+
+            if (timeSpan.TotalDays > 0)
+            {
+                DaysRemaining = $"{(int)timeSpan.TotalDays} day(s) remaining";
+            }
+            else
+            {
+                DaysRemaining = "Auction started!";
             }
         }
 

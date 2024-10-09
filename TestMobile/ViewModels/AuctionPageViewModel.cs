@@ -16,7 +16,6 @@ namespace TestMobile.ViewModels
     {
         private List<Auction> _auctions;
         private Auction _selectedAuction;
-        private Auction _storedAuctionBeforeNavigation;
         public List<Auction> Auctions
         {
             get => _auctions;

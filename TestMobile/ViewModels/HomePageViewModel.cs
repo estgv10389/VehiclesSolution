@@ -1,69 +1,139 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TestMobile.Models;
+using TestMobile.Models.Components;
+
 
 namespace TestMobile.ViewModels
 {
     public class HomePageViewModel
     {
-        private int _totalCars;
-        private Auction _nextAuction;
-        private int _nextAuctionCount;
-
-        public int TotalCars
+        private DateTime _nextAuctionDate;
+        private string _daysRemaining;
+        private List<CustomColumnDefinition> _auctionColumnDefinitions;
+        private Vehicle _selectedVehicle;
+        private Vehicle? _highestBidVehicle;
+        public List<Vehicle> MostFavoritedVehicles { get; set; }
+        public string DaysRemaining
         {
-            get => _totalCars;
+            get => _daysRemaining;
             set
             {
-                _totalCars = value;
-                OnPropertyChanged();
+                _daysRemaining = value;
+                OnPropertyChanged(nameof(DaysRemaining));
             }
         }
 
-        public Auction NextAuction
+        public DateTime NextAuctionDate
         {
-            get => _nextAuction;
+            get => _nextAuctionDate;
             set
             {
-                _nextAuction = value;
-                OnPropertyChanged();
+                _nextAuctionDate = value;
+                OnPropertyChanged(nameof(NextAuctionDate));
+                CalculateDaysRemaining();
             }
         }
 
-        public int NextAuctionCount
+        public Vehicle? HighestBidVehicle
         {
-            get => _nextAuctionCount;
+            get => _highestBidVehicle;
             set
             {
-                _nextAuctionCount = value;
-                OnPropertyChanged();
+                _highestBidVehicle = value;
+                OnPropertyChanged(nameof(HighestBidVehicle));
+
             }
+        }
+
+        public Vehicle SelectedVehicle
+        {
+            get => _selectedVehicle;
+            set
+            {
+                if (_selectedVehicle != value)
+                {
+                    _selectedVehicle = value;
+                    OnPropertyChanged();
+                    if (_selectedVehicle != null)
+                    {
+                        NavigateToDetails(_selectedVehicle);
+                    }
+                }
+            }
+        }
+
+        public List<CustomColumnDefinition> AuctionColumnDefinitions
+        {
+            get => _auctionColumnDefinitions;
+            set
+            {
+                if (_auctionColumnDefinitions != value)
+                {
+                    _auctionColumnDefinitions = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private void InitializeColumnDefinitions()
+        {
+            AuctionColumnDefinitions = new List<CustomColumnDefinition>
+            {
+                new CustomColumnDefinition { Header = "Make", BindingProperty = "Make", IsBold = true, Width = 100 },
+                new CustomColumnDefinition { Header = "Model", BindingProperty = "Model", IsBold = true, Width = 100 },
+                new CustomColumnDefinition { Header = "Year", BindingProperty = "Year", IsBold = true, Width = 100 },
+            };
         }
 
         public HomePageViewModel()
         {
+            InitializeColumnDefinitions();
             LoadData();
         }
 
         private void LoadData()
         {
             var auctions = App.AuctionList ?? new List<Auction>();
-            TotalCars = auctions.Sum(a => a.Vehicles.Count);
-            NextAuction = auctions
+            var nexAuction = auctions
                 .Where(a => a.DateTime >= DateTime.Now)
                 .OrderBy(a => a.DateTime)
-                .FirstOrDefault();
-                
-            NextAuctionCount = auctions
-                .Where(a => a.DateTime >= DateTime.Now)
-                .OrderBy(a => a.DateTime).SelectMany(a => a.Vehicles).Count();
-
+                .FirstOrDefault() ?? new Auction { DateAndTimeRaw = "", Vehicles = new List<Vehicle>() };
+            NextAuctionDate = nexAuction.DateTime;
+            List<Vehicle> vehiclesList = nexAuction.Vehicles;
+            MostFavoritedVehicles = vehiclesList.Where(v => v.Favourite).ToList();
+            HighestBidVehicle = vehiclesList.OrderByDescending(v => v.StartingBid).FirstOrDefault();
         }
+
+        private async void NavigateToDetails(Vehicle vehicle)
+        {
+            if (vehicle == null)
+                return;
+            SelectedVehicle = null;
+            await Application.Current.MainPage.Navigation.PushAsync(new Views.Vehicles.VehicleDetails(vehicle));
+        }
+
+
+        private void CalculateDaysRemaining()
+        {
+            var timeSpan = NextAuctionDate - DateTime.Now;
+
+            if (timeSpan.TotalDays > 0)
+            {
+                DaysRemaining = $"{(int)timeSpan.TotalDays} day(s) remaining";
+            }
+            else
+            {
+                DaysRemaining = "Auction started!";
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null) =>

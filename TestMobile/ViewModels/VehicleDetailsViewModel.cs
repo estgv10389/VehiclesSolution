@@ -14,7 +14,6 @@ namespace TestMobile.ViewModels
     {
         private ImageSource _imageSource;
         private Vehicle _vehicle;
-        private bool _favourite;
         private string _auctionDate;
         private string _auctionTime;
         private DateTime _vehicleAuctionDateTime;

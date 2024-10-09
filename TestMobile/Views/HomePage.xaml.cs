@@ -4,9 +4,13 @@ namespace TestMobile.Pages;
 
 public partial class HomePage : ContentPage
 {
-	public HomePage()
+    private HomePageViewModel _viewModel;
+    public HomePage()
 	{
 		InitializeComponent();
-        BindingContext = new HomePageViewModel();
+        _viewModel = new HomePageViewModel();
+        BindingContext = _viewModel;
     }
+
+   
 }

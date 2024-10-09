@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net8.0;net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
@@ -13,7 +13,7 @@
 		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
 		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
 
-		<OutputType>Exe</OutputType>
+		<OutputType Condition="'$(TargetFramework)' != 'net8.0'">Exe</OutputType>
 		<RootNamespace>TestMobile</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
@@ -45,7 +45,7 @@
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" color="#152d6d" />
-		
+
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
@@ -64,17 +64,23 @@
 	<ItemGroup>
 	  <AndroidResource Remove="Data\**" />
 	  <Compile Remove="Data\**" />
+	  <Compile Remove="Resources\Images\Vehicles\**" />
 	  <EmbeddedResource Remove="Data\**" />
+	  <EmbeddedResource Remove="Resources\Images\Vehicles\**" />
 	  <MauiCss Remove="Data\**" />
+	  <MauiCss Remove="Resources\Images\Vehicles\**" />
+	  <MauiImage Remove="Resources\Images\Vehicles\**" />
 	  <MauiXaml Remove="Data\**" />
+	  <MauiXaml Remove="Resources\Images\Vehicles\**" />
 	  <None Remove="Data\**" />
+	  <None Remove="Resources\Images\Vehicles\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\auction.png" />
+	  <None Remove="Resources\Images\logo.png" />
 	  <None Remove="Resources\Images\star_filled.png" />
 	  <None Remove="Resources\Images\star_outline.png" />
-	  <None Remove="Resources\Raw\vehicles_dataset.json" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -96,6 +102,12 @@
 	  <MauiXaml Update="Views\Components\CardsComponent.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\Components\FilterPopupPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Components\SortPopupPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\Components\TableViewComponent.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -114,7 +126,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Resources\Images\Vehicles\" />
+		<EmbeddedResource Include="Resources/Raw/vehicles_dataset.json" />
 	</ItemGroup>
-
 </Project>

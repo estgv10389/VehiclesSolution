@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
-using TestMobile.Handler;
+using TestMobile.Interfaces;
 using TestMobile.Pages.Vehicles;
 using TestMobile.Services;
 
@@ -18,18 +18,13 @@ namespace TestMobile
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("fa-solid-900.ttf", "FontAwesomeSolid");
+                    fonts.AddFont("fa-brands-400.ttf", "FontAwesomeBrands");
+                    fonts.AddFont("fa-regular-400.ttf", "FontAwesomeRegular");
+                    fonts.AddFont("fa-v4compatibility-400.ttf", "FontAwesomeV4Compatibility");
                 });
-            Environment.SetEnvironmentVariable("API_BASE_URI", "http://10.0.2.2:5249/api/");
-
             builder.Services.AddSingleton<LoadingService>();
-            builder.Services.AddHttpClient<AuthService>();
-            builder.Services.AddHttpClient<VehicleService>()
-             .AddHttpMessageHandler<AuthTokenHandler>();
-
-            builder.Services.AddTransient<VehiclesInit>();
-            builder.Services.AddTransient<AuthTokenHandler>();
-      
-
+            builder.Services.AddTransient<IDialogService, DialogService>();
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

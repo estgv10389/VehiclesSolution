@@ -9,8 +9,10 @@ namespace TestMobile.Models
 {
    public class Details
     {
-
+        [JsonPropertyName("specification")]
         public required Specification Specification { get; set; }
+
+        [JsonPropertyName("ownership")]
         public OwnerShip? Ownership { get; set; }
 
         [JsonPropertyName("equipment")]
