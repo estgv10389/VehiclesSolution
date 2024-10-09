@@ -24,30 +24,31 @@
     
     <ContentView.Content>
         <StackLayout>
-            <Grid BackgroundColor="#CCCCCC" Padding="10">
+            <Grid BackgroundColor="{StaticResource SecondaryDarkText}" Padding="10">
                 <ScrollView Orientation="Horizontal">
                     <StackLayout Orientation="Horizontal" x:Name="HeaderStack">
                    
                     </StackLayout>
                 </ScrollView>
             </Grid>
-
-            <CollectionView x:Name="TableCollectionView"
+            <Border Stroke="{StaticResource PrimaryDark}" StrokeThickness="2">
+                <CollectionView x:Name="TableCollectionView"
                             ItemsSource="{Binding Items, Source={RelativeSource AncestorType={x:Type local:TableViewComponent}}}"
                             SelectionMode="Single"
                             SelectedItem="{Binding SelectedItem, Source={x:Reference Name=ThisContentView}, Mode=TwoWay}"
                             >
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Padding="10">
-                            <Label Text="{Binding YourDataProperty}" />
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" />
-                </CollectionView.ItemsLayout>
-            </CollectionView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="10">
+                                <Label Text="{Binding YourDataProperty}" />
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" />
+                    </CollectionView.ItemsLayout>
+                </CollectionView>
+            </Border>
         </StackLayout>
     </ContentView.Content>
 </ContentView>

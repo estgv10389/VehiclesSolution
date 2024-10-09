@@ -10,32 +10,46 @@
     Title="TestMobile"
     >
 
-    <FlyoutItem Title="Home Page" Icon="icon_page.png">
-        <ShellContent Title="Home Page"
+    <FlyoutItem Title="Home">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="&#xf015;"  
+                             FontFamily="FontAwesomeSolid"
+                             Color="{StaticResource Primary}"
+                             Size="20" />
+        </FlyoutItem.Icon>
+        <ShellContent Title="Home"
                       Route="homePage"
                       ContentTemplate="{DataTemplate views:HomePage}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Vehicles Page" Icon="icon_page.png">
-        <ShellContent Title="Vehicles Page"
-                   Route="vehicles"
-                   ContentTemplate="{DataTemplate vehicles:VehiclesInit}" />
+    <FlyoutItem Title="Vehicles">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="&#xf1b9;"
+                             FontFamily="FontAwesomeSolid"
+                             Color="{StaticResource Primary}"
+                             Size="20" />
+        </FlyoutItem.Icon>
+        <ShellContent Title="Vehicles"
+                      Route="vehicles"
+                      ContentTemplate="{DataTemplate vehicles:VehiclesInit}" />
     </FlyoutItem>
 
-    <FlyoutItem Title="Auctions Page" Icon="icon_page.png">
-        <ShellContent Title="Auctions Page"
-                   Route="auctions"
-                   ContentTemplate="{DataTemplate auctions:AuctionsInit}" />
+    <FlyoutItem Title="Auctions">
+        <FlyoutItem.Icon>
+            <FontImageSource Glyph="&#xf145;"
+                             FontFamily="FontAwesomeSolid"
+                             Color="{StaticResource Primary}"
+                             Size="20" />
+        </FlyoutItem.Icon>
+        <ShellContent Title="Auctions"
+                      Route="auctions"
+                      ContentTemplate="{DataTemplate auctions:AuctionsInit}" />
     </FlyoutItem>
 
-    <MenuItem Text="Sair"
-          Clicked="OnSignOutClicked"
-          >
-        <MenuItem.IconImageSource>
-            <FontImageSource Glyph="&#xf08b;"
-                         FontFamily="FASolid"
-                         Color="Red" />
-        </MenuItem.IconImageSource>
-    </MenuItem>
-
+    <Shell.TitleView>
+        <Image Source="logo.png" 
+                   HeightRequest="40"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+    </Shell.TitleView>
 </Shell>

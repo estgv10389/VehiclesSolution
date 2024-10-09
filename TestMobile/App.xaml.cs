@@ -14,13 +14,20 @@ namespace TestMobile
             InitializeComponent();
             _loadingService = new LoadingService();
             MainPage = new LoadingPage();
-            LoadData();
+           
         }
 
-        private async void LoadData()
+        protected override async void OnStart()
+        {
+            base.OnStart();
+            await LoadData();  
+        }
+
+        private async Task LoadData()
         {
             var loadingService = new LoadingService();
-            AuctionList = await _loadingService.LoadingFile();
+            var filePath = "vehicles_dataset.json";
+            AuctionList = await _loadingService.LoadingFile(filePath);
             MainPage = new AppShell();
         }
     }

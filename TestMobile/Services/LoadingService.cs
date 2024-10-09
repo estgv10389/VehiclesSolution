@@ -10,14 +10,12 @@ namespace TestMobile.Services
 {
     public class LoadingService
     {
-        public async Task<List<Auction>> LoadingFile()
+        public async Task<List<Auction>> LoadingFile(string? filePath)
         {
             List<Auction> AuctionList = new List<Auction>();
-            var filePath = "vehicles_dataset.json";
-
             try
             {
-                using Stream stream = await FileSystem.OpenAppPackageFileAsync(filePath);
+                using Stream stream = await FileSystem.OpenAppPackageFileAsync(filePath!);
                 using StreamReader reader = new StreamReader(stream);
                 string jsonString = await reader.ReadToEndAsync();
 
@@ -34,6 +32,7 @@ namespace TestMobile.Services
                                           Vehicles = g.ToList()
                                       })
                                       .ToList();
+                Console.WriteLine($"Conteúdo do JSON: {jsonString}");
             }
             catch (Exception ex)
             {

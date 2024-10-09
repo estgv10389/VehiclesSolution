@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using TestMobile.Models;
 using TestMobile.Models.Components;
 
@@ -15,7 +17,14 @@ namespace TestMobile.ViewModels
         private List<Vehicle> _vehicles;
         private List<CustomColumnDefinition> _auctionColumnDefinitions;
         private Vehicle _selectedVehicle;
+        private int _currentPage = 1;
+        public ObservableCollection<Vehicle> FilteredVehicles { get; set; } = new ObservableCollection<Vehicle>();
+        private int _selectedVehiclesPerPage;
+        private bool _canGoToNextPage;
+        private bool _canGoToPreviousPage;
 
+        public ICommand NextPageCommand { get; }
+        public ICommand PreviousPageCommand { get; }
         public List<Vehicle> Vehicles
         {
             get => _vehicles;
@@ -42,14 +51,72 @@ namespace TestMobile.ViewModels
             }
         }
 
+        public int SelectedVehiclesPerPage
+        {
+            get => _selectedVehiclesPerPage;
+            set
+            {
+                _selectedVehiclesPerPage = value;
+                OnPropertyChanged();
+                _currentPage = 1;
+                //LoadInitialVehicles();
+            }
+        }
+        public int TotalPages => (int)Math.Ceiling((double)Vehicles.Count / SelectedVehiclesPerPage);
+        public string CurrentPageDisplay => $"Page {_currentPage} of {TotalPages}";
+
+        public bool CanGoToNextPage
+        {
+            get => _canGoToNextPage;
+            set
+            {
+                _canGoToNextPage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool CanGoToPreviousPage
+        {
+            get => _canGoToPreviousPage;
+            set
+            {
+                _canGoToPreviousPage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public VehiclesPageViewModel()
         {
             InitializeColumnDefinitions();
-            LoadAuctions();
-
+            SelectedVehiclesPerPage = 10;
+            _ = LoadPageDataAsync();
+            NextPageCommand = new Command(GoToNextPage);
+            PreviousPageCommand = new Command(GoToPreviousPage);
         }
 
-        private void LoadAuctions()
+        private async Task LoadPageDataAsync()
+        {
+            await LoadAuctions();  
+        }
+
+        private void LoadInitialVehicles()  
+        {
+            if (!Vehicles.Any()) return;
+
+            FilteredVehicles.Clear();
+            var initialVehicles = Vehicles.Skip((_currentPage - 1) * SelectedVehiclesPerPage).Take(SelectedVehiclesPerPage).ToList();
+            foreach (var vehicle in initialVehicles)
+            {
+                FilteredVehicles.Add(vehicle);
+            }
+
+            CanGoToNextPage = _currentPage < TotalPages;
+            CanGoToPreviousPage = _currentPage > 1;
+
+            OnPropertyChanged(nameof(CurrentPageDisplay));
+        }
+
+        private async Task LoadAuctions()
         {
             var auctionList = App.AuctionList;
             if (auctionList != null)
@@ -62,6 +129,9 @@ namespace TestMobile.ViewModels
                         Vehicles.Add(vehicle);
                     }
                 }
+
+
+                LoadInitialVehicles();
             }
         }
 
@@ -83,7 +153,7 @@ namespace TestMobile.ViewModels
             AuctionColumnDefinitions = new List<CustomColumnDefinition>
             {
                 new CustomColumnDefinition { Header = "Make", BindingProperty = "Make", IsBold = true, Width = 100 },
-                new CustomColumnDefinition { Header = "Model", BindingProperty = "Model", IsBold = true, Width = 150 },
+                new CustomColumnDefinition { Header = "Model", BindingProperty = "Model", IsBold = true, Width = 100 },
                 new CustomColumnDefinition { Header = "Auction", BindingProperty = "AuctionDateAndTime", IsBold = true, Width = 100 },
             };
         }
@@ -96,6 +166,23 @@ namespace TestMobile.ViewModels
             await Application.Current.MainPage.Navigation.PushAsync(new Views.Vehicles.VehicleDetails(vehicle));
         }
 
+        private void GoToNextPage()
+        {
+            if (_currentPage < TotalPages)
+            {
+                _currentPage++;
+                LoadInitialVehicles();
+            }
+        }
+
+        private void GoToPreviousPage()
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage--;
+                LoadInitialVehicles();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string? name = null) =>
